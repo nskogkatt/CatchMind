@@ -2,7 +2,7 @@
 #include "WaitingRoom.h"
 #include "ClientInfo.h"
 #include "../../Common/PACKET.h"
-#include "IOCP_ServerManager.h"
+//#include "IOCP_ServerManager.h"
 
 
 WaitingRoomManager* WaitingRoomManager::m_pThis = NULL;
