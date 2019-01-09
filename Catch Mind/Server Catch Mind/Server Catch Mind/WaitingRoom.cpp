@@ -3,14 +3,14 @@
 
 
 
-void WaitingRoom::Init(short nRoomNumber, char * szRoomName,SOCKET& clientSock, ClientInfo* clientInfo)
+void WaitingRoom::Init(short nRoomNumber, char * szRoomName, SOCKET& clientSock, ClientInfo* clientInfo)
 {
 	m_nRoomNumber = nRoomNumber;
 	strcpy(m_szRoomName, szRoomName);
 	m_nSupervisorKey = clientSock;
 	strcpy(m_szSuperVisorName, clientInfo->m_szName);
 	clientInfo->m_roomNumber = nRoomNumber;
-	
+
 	m_mapRoomClient.insert(make_pair(clientSock, clientInfo));
 }
 
@@ -25,7 +25,7 @@ void WaitingRoom::LeaveUser(SOCKET& clientSock)
 	m_mapRoomClient[clientSock]->m_isSuperVisor = false;
 	m_mapRoomClient[clientSock]->m_roomNumber = 0;
 	m_mapRoomClient.erase(clientSock);
-	
+
 	if (m_mapRoomClient.size() > 0)
 	{
 		auto iter = m_mapRoomClient.begin();

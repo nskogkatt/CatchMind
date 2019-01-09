@@ -252,7 +252,7 @@ bool IOCP_ServerManager::ProcessPacket(SOCKET& clientSock, char* szBuf, int& rec
 
 		m_mapClient[clientSock]->m_isLeave = true;
 		short roomNumber = WaitingRoomManager::GetInstance()->LeaveRoom(m_mapClient[clientSock]->m_roomNumber, clientSock);
-		
+
 		if (roomNumber > 0)
 		{
 			// 방 제거 리스트 갱신

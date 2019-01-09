@@ -16,7 +16,7 @@ CRITICAL_SECTION g_cs;
 unsigned int WINAPI ClientWorkerThread(void* arg);
 void MyBeginThreadEx(HANDLE hCp);
 
-// 俊矾贸府
+// 俊矾贸府 asdf
 void err_display(char * msg);
 
 LRESULT CALLBACK WndProc(HWND, UINT, WPARAM, LPARAM);

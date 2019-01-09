@@ -8,7 +8,7 @@ class ClientInfo
 {
 private:
 
-public:	
+public:
 	SOCKET				m_sock;
 
 	int					m_iIndex;
@@ -21,9 +21,9 @@ public:
 
 	bool				m_isLeave;
 	bool				m_isSuperVisor;
-		
+
 	//네트워크 데이터전송시 필요한 버퍼 및 버퍼크기
-	char		m_Buf[BUFSIZE+1];
+	char		m_Buf[BUFSIZE + 1];
 	int			m_recvBytes;
 
 
