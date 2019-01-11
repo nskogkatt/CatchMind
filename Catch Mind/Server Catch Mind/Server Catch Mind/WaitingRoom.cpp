@@ -43,6 +43,11 @@ short WaitingRoom::GetRoomHeadCount() const
 	return m_mapRoomClient.size();
 }
 
+char * WaitingRoom::GetRoomName() 
+{
+	return m_szRoomName;
+}
+
 PACKET_ROOM_LIST & WaitingRoom::GetRoomInfo()
 {
 	PACKET_ROOM_LIST packet;

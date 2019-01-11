@@ -19,12 +19,15 @@ void WaitingRoomManager::CreateRoom(char* roomName, SOCKET & clientSock, ClientI
 	pRoom->Init(m_iRoomIndex, roomName, clientSock, clientInfo);
 	m_mapRoom.insert(make_pair(m_iRoomIndex, pRoom));
 
+	printf("[방생성] 방이름: %s, 방장: %s\n", roomName, clientInfo->m_szName);
+
 	m_iRoomIndex++;
 }
 
 void WaitingRoomManager::JoinRoom(int roomNumber, SOCKET & clientSock, ClientInfo * clientInfo)
 {
 	m_mapRoom[roomNumber]->AddUser(clientSock, clientInfo);
+	printf("[방참여] 방번호: %d, 참여자: %s, 총인원: %d / 8\n", roomNumber, clientInfo->m_szName,m_mapRoom[roomNumber]->GetRoomHeadCount());
 }
 
 int WaitingRoomManager::LeaveRoom(int roomNumber, SOCKET& clientSock)
