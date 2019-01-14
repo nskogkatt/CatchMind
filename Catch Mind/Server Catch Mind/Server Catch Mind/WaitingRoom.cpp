@@ -1,6 +1,6 @@
 #include "WaitingRoom.h"
 #include "ClientInfo.h"
-
+//#include "IOCP_ServerManager.h"
 
 
 void WaitingRoom::Init(short nRoomNumber, char * szRoomName, SOCKET& clientSock, ClientInfo* clientInfo)
@@ -35,6 +35,24 @@ void WaitingRoom::LeaveUser(SOCKET& clientSock)
 	else
 	{
 		strcpy(m_szSuperVisorName, "");
+	}
+}
+
+void WaitingRoom::RefreshUserList(SOCKET& clientSock)
+{
+	PACKET_JOINROOM_USERLIST packet;
+	packet.header.wIndex = PACKET_INDEX_JOINROOM_USERLIST;
+	packet.header.wLen = sizeof(packet);
+	
+	for (auto iter = m_mapRoomClient.begin(); iter != m_mapRoomClient.end(); iter++)
+	{
+		packet.userInfo.identifyKey = (*iter).second->m_sock;
+		packet.userInfo.m_ePlayerType = (*iter).second->m_ePlayerType;
+		strcpy(packet.userInfo.szNickName,(*iter).second->m_szName);
+		strcpy(packet.userInfo.szLevel,(*iter).second->m_szLevel);
+		strcpy(packet.userInfo.szPosition,(*iter).second->m_szPosition);
+
+		send(clientSock, (const char*)&packet, sizeof(packet), 0);
 	}
 }
 

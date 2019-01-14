@@ -4,7 +4,6 @@
 #include "../../Common/defineSize.h"
 
 
-
 struct SOCKETINFO
 {
 	OVERLAPPED overlapped;

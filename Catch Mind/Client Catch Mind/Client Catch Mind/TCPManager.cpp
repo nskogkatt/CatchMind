@@ -194,7 +194,8 @@ bool TCPManager::ProcessPacket(char * szBuf, int& recvBytes)
 		PACKET_JOINROOM_USERLIST packet;
 		memcpy(&packet, m_szBuf, header.wLen);
 
-
+		// ∞‘¿”∑Î UI ºº∆√
+		UIManager::GetInstance();
 
 	}
 	break;

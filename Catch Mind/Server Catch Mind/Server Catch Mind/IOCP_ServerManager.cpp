@@ -294,6 +294,8 @@ bool IOCP_ServerManager::ProcessPacket(SOCKET& clientSock, char* szBuf, int& rec
 		{
 			WaitingRoomManager::GetInstance()->SendRoomListToClient(iter->first);
 		}
+
+		WaitingRoomManager::GetInstance()->RefreshRoomInfo(m_mapClient[clientSock]->m_roomNumber);
 	}
 	break;
 	case PACKET_INDEX_JOIN_ROOM:
@@ -302,6 +304,8 @@ bool IOCP_ServerManager::ProcessPacket(SOCKET& clientSock, char* szBuf, int& rec
 		memcpy(&packet, m_mapClient[clientSock]->m_Buf, header.wLen);
 
 		WaitingRoomManager::GetInstance()->JoinRoom(packet.roomNumber, clientSock, m_mapClient[clientSock]);
+		WaitingRoomManager::GetInstance()->RefreshRoomInfo(clientSock, m_mapClient[clientSock]->m_roomNumber);
+
 	}
 	break;
 	case PACKET_INDEX_MODIFY_USER:
