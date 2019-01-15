@@ -3,6 +3,9 @@
 #include "ResManager.h"
 #include "GameManager.h"
 #include "UIRoomList.h"
+#include "Player.h"
+
+#define	MAX_HEADCOUNT		9		// 방접속 최대인원수 = 값 -1
 
 UIManager*		UIManager::m_pThis = NULL;
 
@@ -22,6 +25,7 @@ void UIManager::Init(HWND hWnd, HINSTANCE hInstance, LONG EditSubProc)
 	CreateUISelectCharacter();
 	CreateUIWaitingRoom();
 	CreateUIWaitingRoomInGame();
+	CreateUIJoinRoomUserList();
 }
 
 void UIManager::Draw()
@@ -198,6 +202,20 @@ void UIManager::CreateUIWaitingRoomInGame()
 
 }
 
+void UIManager::CreateUIJoinRoomUserList()
+{
+	Player*		pPlayer;
+	RECT		rcRect;
+
+	for (int i = 1; i < MAX_HEADCOUNT; i++)
+	{
+		pPlayer = new Player;
+		SetRect(&rcRect, 2000, 0, 0, 0);
+		pPlayer->Init(PLAYER_TYPE_CHARACTER_ONION, ResManager::GetInstance()->GetBitmap(), rcRect);
+		m_mapJoinRoomUserList.insert(make_pair(i, pPlayer));
+	}
+}
+
 void UIManager::ShowCreateRoomWindowPop()
 {
 	RECT rcRect;
@@ -261,7 +279,7 @@ short UIManager::JoinRoom()
 void UIManager::AddUserList(int nIdentifyKey, char * szNickName, char * szLevel, char * szPosition)
 {
 	auto iter = m_mapUserList.insert(std::make_pair(nIdentifyKey, nullptr));
-	
+
 	if (iter.second)
 	{
 		//중복된 키값 없이 insert 성공시
@@ -273,7 +291,7 @@ void UIManager::AddUserList(int nIdentifyKey, char * szNickName, char * szLevel,
 	}
 	else
 	{
- 		//MessageBox(NULL, "Add User Failed..", "Caution!", MB_OK);
+		//MessageBox(NULL, "Add User Failed..", "Caution!", MB_OK);
 	}
 }
 
@@ -303,6 +321,27 @@ void UIManager::RemoveRoomList(int nRoomNumber)
 {
 	m_mapRoomList.erase(nRoomNumber);
 }
+
+void UIManager::RefreshJoinRoomUserList(deque<UserInfo>& dequeUserInfo)
+{
+	m_mapJoinRoomUserList;
+	UserInfo userInfo;
+
+	for (auto iter = m_mapJoinRoomUserList.begin(); iter != m_mapJoinRoomUserList.end(); iter++)
+	{
+		userInfo = dequeUserInfo.front();
+		dequeUserInfo.pop_front();
+
+		(*iter).second->SetLiveObject(true);
+		(*iter).second->SetPlayerInfo(userInfo);
+
+		if (dequeUserInfo.empty())
+			break;
+	}
+
+}
+
+
 
 void UIManager::AddChattingText(string str)
 {
@@ -352,6 +391,9 @@ void UIManager::InitUIObjects()
 		iter->second->SetLiveObject(false);
 		iter->second->SetPosition(rcRect);
 	}
+
+	// JoinRoomUser List 초기화
+
 }
 
 void UIManager::SettingSelectCharacterUI()

@@ -32,9 +32,9 @@ void WaitingRoomManager::JoinRoom(int roomNumber, SOCKET & clientSock, ClientInf
 	printf("[방참여] 방번호: %d, 참여자: %s, 총인원: %d / 8\n", roomNumber, clientInfo->m_szName,m_mapRoom[roomNumber]->GetRoomHeadCount());
 }
 
-void WaitingRoomManager::RefreshRoomInfo(SOCKET& clientSock, int roomNumber)
+void WaitingRoomManager::JoinRoomUserListInfo(SOCKET& clientSock, int roomNumber)
 {
-	m_mapRoom[roomNumber]->RefreshUserList(clientSock);
+	m_mapRoom[roomNumber]->JoinRoomUserList(clientSock);
 }
 
 int WaitingRoomManager::LeaveRoom(int roomNumber, SOCKET& clientSock)

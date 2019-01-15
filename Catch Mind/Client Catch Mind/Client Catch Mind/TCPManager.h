@@ -2,7 +2,8 @@
 #include <WinSock2.h>
 #include <Windows.h>
 #include "../../Common/defineSize.h"
-
+#include <deque>
+using std::deque;
 
 struct SOCKETINFO
 {
@@ -30,6 +31,7 @@ private:
 	char						m_szBuf[BUFSIZE + 1];
 	int							m_recvBytes;
 
+	deque<UserInfo>				m_dequeJoinRoomUserInfo;
 
 	// 오류 출력 함수
 	void err_quit(char* msg);

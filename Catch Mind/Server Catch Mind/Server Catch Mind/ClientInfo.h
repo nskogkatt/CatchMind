@@ -13,6 +13,7 @@ public:
 
 	int					m_iIndex;
 	int					m_roomNumber;
+	short				m_JoinRoomSequence;
 
 	PLAYER_TYPE			m_ePlayerType;
 	char				m_szName[NAMESIZE];

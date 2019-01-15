@@ -17,25 +17,6 @@
 #define IDC_PASSWORD	2001
 #define IDC_CHATTING	2002
 
-
-struct UserInfo
-{
-	int			identifyKey;
-	char		szNickName[NAMESIZE];
-	char		szLevel[LEVELSZIE];
-	char		szPosition[POSITIONSIZE];
-};
-
-struct RoomInfo
-{
-	short			roomNumber;
-	char			roomName[ROOM_NAMESIZE];
-	char			superVisorName[NAMESIZE];
-	short			roomSize;
-};
-
-
-
 enum PLAYER_TYPE
 {
 	PLAYER_TYPE_CHARACTER_BANANA = 3000,
@@ -58,3 +39,34 @@ enum PLAYER_TYPE
 	PLAYER_TYPE_END
 };
 
+
+
+struct UserInfo
+{
+	int				identifyKey;
+	PLAYER_TYPE		m_ePlayerType;
+	char			szNickName[NAMESIZE];
+	char			szLevel[LEVELSZIE];
+	char			szPosition[POSITIONSIZE];
+};
+
+struct RoomInfo
+{
+	short			roomNumber;
+	char			roomName[ROOM_NAMESIZE];
+	char			superVisorName[NAMESIZE];
+	short			roomSize;
+};
+
+
+
+
+
+void SetUserInfo(UserInfo& userInfoSrc, UserInfo& userInfoDst)
+{
+	userInfoSrc.identifyKey = userInfoDst.identifyKey;
+	userInfoSrc.m_ePlayerType = userInfoDst.m_ePlayerType;
+	strcpy(userInfoSrc.szLevel, userInfoDst.szLevel);
+	strcpy(userInfoSrc.szNickName, userInfoDst.szNickName);
+	strcpy(userInfoSrc.szPosition, userInfoDst.szPosition);
+}

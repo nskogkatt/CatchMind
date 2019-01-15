@@ -194,9 +194,17 @@ bool TCPManager::ProcessPacket(char * szBuf, int& recvBytes)
 		PACKET_JOINROOM_USERLIST packet;
 		memcpy(&packet, m_szBuf, header.wLen);
 
-		// °ÔÀÓ·ë UI ¼¼ÆÃ
-		UIManager::GetInstance();
+		UserInfo userInfo;
+		SetUserInfo(userInfo, packet.userInfo);
 
+		m_dequeJoinRoomUserInfo.push_back(userInfo);
+
+		if (packet.bIsEnd)
+		{
+			// °ÔÀÓ·ë Playre UI Refresh.
+			UIManager::GetInstance()->RefreshJoinRoomUserList(m_dequeJoinRoomUserInfo);
+			m_dequeJoinRoomUserInfo.clear();
+		}
 	}
 	break;
 	}

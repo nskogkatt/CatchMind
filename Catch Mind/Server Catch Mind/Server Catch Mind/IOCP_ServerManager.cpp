@@ -128,6 +128,7 @@ void IOCP_ServerManager::ProcessSocketMessage()
 		pClient->m_iIndex = m_iClientIndex++;
 		pClient->m_isSuperVisor = false;
 		pClient->m_roomNumber = 0;
+		pClient->m_JoinRoomSequence = 0;
 		strcpy(pClient->m_szLevel, "룽");
 		strcpy(pClient->m_szPosition, "대기실");
 		m_mapClient.insert(std::make_pair(pClient->m_sock, pClient));
@@ -295,7 +296,8 @@ bool IOCP_ServerManager::ProcessPacket(SOCKET& clientSock, char* szBuf, int& rec
 			WaitingRoomManager::GetInstance()->SendRoomListToClient(iter->first);
 		}
 
-		WaitingRoomManager::GetInstance()->RefreshRoomInfo(m_mapClient[clientSock]->m_roomNumber);
+		// 방안 유저목록 갱신
+		WaitingRoomManager::GetInstance()->JoinRoomUserListInfo(clientSock, m_mapClient[clientSock]->m_roomNumber);
 	}
 	break;
 	case PACKET_INDEX_JOIN_ROOM:
@@ -304,7 +306,9 @@ bool IOCP_ServerManager::ProcessPacket(SOCKET& clientSock, char* szBuf, int& rec
 		memcpy(&packet, m_mapClient[clientSock]->m_Buf, header.wLen);
 
 		WaitingRoomManager::GetInstance()->JoinRoom(packet.roomNumber, clientSock, m_mapClient[clientSock]);
-		WaitingRoomManager::GetInstance()->RefreshRoomInfo(clientSock, m_mapClient[clientSock]->m_roomNumber);
+
+		// 방안 유저목록 갱신
+		WaitingRoomManager::GetInstance()->JoinRoomUserListInfo(clientSock, m_mapClient[clientSock]->m_roomNumber);
 
 	}
 	break;

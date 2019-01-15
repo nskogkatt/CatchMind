@@ -4,6 +4,7 @@
 
 void Player::Init(PLAYER_TYPE eType, Bitmap ** pBitmap, RECT rcRect)
 {
+	m_identifyKey = 0;
 	m_eType = eType;
 	strcpy(m_szTypeName, "¾çÆÄ·î");
 
@@ -50,6 +51,17 @@ void Player::SetPlayerInfo(char * szNickName, char* szLevel, char* szPosition)
 	strcpy(m_szLevel, szLevel);
 	strcpy(m_szPosition, szPosition);
 }
+
+void Player::SetPlayerInfo(UserInfo & userInfo)
+{
+	m_identifyKey = userInfo.identifyKey;
+	m_eType = userInfo.m_ePlayerType;
+	strcpy(m_szLevel, userInfo.szLevel);
+	strcpy(m_szNickName, userInfo.szNickName);
+	strcpy(m_szPosition, userInfo.szPosition);
+}
+
+
 
 PLAYER_TYPE Player::GetPlayerType() const
 {

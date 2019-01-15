@@ -38,21 +38,28 @@ void WaitingRoom::LeaveUser(SOCKET& clientSock)
 	}
 }
 
-void WaitingRoom::RefreshUserList(SOCKET& clientSock)
+void WaitingRoom::JoinRoomUserList(SOCKET& clientSock)
 {
 	PACKET_JOINROOM_USERLIST packet;
 	packet.header.wIndex = PACKET_INDEX_JOINROOM_USERLIST;
 	packet.header.wLen = sizeof(packet);
-	
-	for (auto iter = m_mapRoomClient.begin(); iter != m_mapRoomClient.end(); iter++)
+
+	for (auto iter = m_mapRoomClient.begin(); iter != m_mapRoomClient.end();)
 	{
 		packet.userInfo.identifyKey = (*iter).second->m_sock;
 		packet.userInfo.m_ePlayerType = (*iter).second->m_ePlayerType;
-		strcpy(packet.userInfo.szNickName,(*iter).second->m_szName);
-		strcpy(packet.userInfo.szLevel,(*iter).second->m_szLevel);
-		strcpy(packet.userInfo.szPosition,(*iter).second->m_szPosition);
+		strcpy(packet.userInfo.szNickName, (*iter).second->m_szName);
+		strcpy(packet.userInfo.szLevel, (*iter).second->m_szLevel);
+		strcpy(packet.userInfo.szPosition, (*iter).second->m_szPosition);
+		
+		++iter;
+		if (iter != m_mapRoomClient.end())
+			packet.bIsEnd = false;
+		else
+			packet.bIsEnd = true;
 
-		send(clientSock, (const char*)&packet, sizeof(packet), 0);
+		for (auto iter = m_mapRoomClient.begin(); iter != m_mapRoomClient.end();)
+			send(iter->first, (const char*)&packet, sizeof(packet), 0);
 	}
 }
 
@@ -61,7 +68,7 @@ short WaitingRoom::GetRoomHeadCount() const
 	return m_mapRoomClient.size();
 }
 
-char * WaitingRoom::GetRoomName() 
+char * WaitingRoom::GetRoomName()
 {
 	return m_szRoomName;
 }

@@ -27,7 +27,7 @@ public:
 
 	void AddUser(SOCKET& clientSock, ClientInfo* clientInfo);
 	void LeaveUser(SOCKET& clientSock);
-	void RefreshUserList(SOCKET& clientSock);
+	void JoinRoomUserList(SOCKET& clientSock);
 	short GetRoomHeadCount() const;
 	char* GetRoomName();
 	PACKET_ROOM_LIST&	GetRoomInfo();

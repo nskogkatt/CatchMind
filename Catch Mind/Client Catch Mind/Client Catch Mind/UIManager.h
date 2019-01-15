@@ -2,17 +2,19 @@
 #include <Windows.h>
 #include <vector>
 #include <map>
+#include <deque>
 #include <string>
 #include "Resource.h"
 #include "../../Common/defineSize.h"
 
 using std::vector;
 using std::map;
+using std::deque;
 using std::make_pair;
 using std::string;
 
 
-
+class Player;
 class UI;
 class UIRoomList;
 class UIManager
@@ -30,6 +32,7 @@ class UIManager
 	map<int, UserInfo*>		m_mapUserList;
 	map<int, UIRoomList*>	m_mapRoomList;
 	map<int, UIRoomList*>::iterator	m_prevSelectRoomList;
+	map<int, Player*>		m_mapJoinRoomUserList;
 
 
 	vector<string>			m_vStrChattingText;
@@ -37,6 +40,7 @@ class UIManager
 	void CreateUISelectCharacter();
 	void CreateUIWaitingRoom();
 	void CreateUIWaitingRoomInGame();
+	void CreateUIJoinRoomUserList();
 
 public:
 	static UIManager* GetInstance()
@@ -67,6 +71,8 @@ public:
 	
 	void AddRoomList(int nRoomNumber, char* roomName, int roomSize, char* superVisorName);
 	void RemoveRoomList(int nRoomNumber);
+
+	void RefreshJoinRoomUserList(deque<UserInfo>& dequeUserInfo);
 
 	void AddChattingText(string str);
 

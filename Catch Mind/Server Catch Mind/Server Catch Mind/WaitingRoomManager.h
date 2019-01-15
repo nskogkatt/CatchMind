@@ -32,7 +32,7 @@ public:
 
 	void	CreateRoom(char* roomName, SOCKET& clientSock, ClientInfo* clientInfo);
 	void	JoinRoom(int roomNumber, SOCKET& clientSock, ClientInfo* clientInfo);
-	void	RefreshRoomInfo(SOCKET& clientSock, int roomNumber);
+	void	JoinRoomUserListInfo(SOCKET& clientSock, int roomNumber);
 	int		LeaveRoom(int roomNumber, SOCKET& clientSock);
 
 

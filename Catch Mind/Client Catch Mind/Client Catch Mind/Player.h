@@ -8,8 +8,9 @@ class Player :
 {
 private:
 	Bitmap*				m_pBitmap[PLAYER_TYPE_END];
-	PLAYER_TYPE			m_eType;
 
+	PLAYER_TYPE			m_eType;
+	int					m_identifyKey;
 	char				m_szTypeName[NAMESIZE];		//캐릭터명
 	char				m_szNickName[NAMESIZE];
 	char				m_szLevel[LEVELSZIE];
@@ -26,6 +27,7 @@ public:
 	void SetPositionPlayer(RECT rcRect);
 	void SetPlayerCharacter(int eType, char* szName);
 	void SetPlayerInfo(char * szNickName, char* szLevel, char* szPosition);
+	void SetPlayerInfo(UserInfo& userInfo);
 	PLAYER_TYPE GetPlayerType() const;
 
 	void CreateRoom(char* roomName);

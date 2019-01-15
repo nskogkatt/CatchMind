@@ -21,15 +21,6 @@ enum PACKET_INDEX
 	PACKET_INDEX_END
 };
 
-struct USER_INFO
-{
-	int				identifyKey;
-	PLAYER_TYPE		m_ePlayerType;
-	char			szNickName[NAMESIZE];
-	char			szLevel[LEVELSZIE];
-	char			szPosition[POSITIONSIZE];
-};
-
 
 struct PACKET_HEADER
 {
@@ -41,7 +32,7 @@ struct PACKET_HEADER
 struct PACKET_LOGIN_RET
 {
 	PACKET_HEADER	header;
-	USER_INFO		userInfo;
+	UserInfo		userInfo;
 };
 
 struct PACKET_MODIFY_PLAYERTYPE
@@ -54,7 +45,7 @@ struct PACKET_USER_LIST
 {
 	PACKET_HEADER	header;
 	WORD			userCount;
-	USER_INFO		userInfo;
+	UserInfo		userInfo;
 
 };
 
@@ -107,7 +98,9 @@ struct PACKET_ROOM_LIST
 struct PACKET_JOINROOM_USERLIST
 {
 	PACKET_HEADER	header;
-	USER_INFO		userInfo;
+	UserInfo		userInfo;
+	short			JoinRoomSequence;
+	bool			bIsEnd;
 };
 
 struct PACKET_MODIFY_USER
