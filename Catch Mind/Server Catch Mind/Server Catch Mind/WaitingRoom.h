@@ -18,16 +18,16 @@ class WaitingRoom
 	char							m_szRoomName[ROOM_NAMESIZE];
 	char							m_szSuperVisorName[NAMESIZE];
 
-	map<SOCKET, ClientInfo*>		m_mapRoomClient;
+	map<short, ClientInfo*>		m_mapRoomClient;
 
 
 public:
 
 	void Init(short nRoomNumber, char* szRoomName, SOCKET& clientSock, ClientInfo* clientInfo);
 
-	void AddUser(SOCKET& clientSock, ClientInfo* clientInfo);
-	void LeaveUser(SOCKET& clientSock);
-	void JoinRoomUserList(SOCKET& clientSock);
+	void AddUser( ClientInfo* clientInfo);
+	void LeaveUser(ClientInfo* clientInfo);
+	void JoinRoomUserList();
 	short GetRoomHeadCount() const;
 	char* GetRoomName();
 	PACKET_ROOM_LIST&	GetRoomInfo();

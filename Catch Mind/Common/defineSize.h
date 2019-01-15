@@ -1,5 +1,4 @@
 #pragma once
-
 #define SERVERPORT		9000
 #define WM_SOCKET		(WM_USER+1)
 
@@ -16,6 +15,8 @@
 #define IDC_ROOM_NAME	2000
 #define IDC_PASSWORD	2001
 #define IDC_CHATTING	2002
+
+#define	MAX_HEADCOUNT		9		// 방접속 최대인원수 = 값 -1
 
 enum PLAYER_TYPE
 {
@@ -48,6 +49,7 @@ struct UserInfo
 	char			szNickName[NAMESIZE];
 	char			szLevel[LEVELSZIE];
 	char			szPosition[POSITIONSIZE];
+	short			joinRoomSequence;;
 };
 
 struct RoomInfo
@@ -61,12 +63,3 @@ struct RoomInfo
 
 
 
-
-void SetUserInfo(UserInfo& userInfoSrc, UserInfo& userInfoDst)
-{
-	userInfoSrc.identifyKey = userInfoDst.identifyKey;
-	userInfoSrc.m_ePlayerType = userInfoDst.m_ePlayerType;
-	strcpy(userInfoSrc.szLevel, userInfoDst.szLevel);
-	strcpy(userInfoSrc.szNickName, userInfoDst.szNickName);
-	strcpy(userInfoSrc.szPosition, userInfoDst.szPosition);
-}

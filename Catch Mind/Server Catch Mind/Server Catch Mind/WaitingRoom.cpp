@@ -1,6 +1,5 @@
 #include "WaitingRoom.h"
 #include "ClientInfo.h"
-//#include "IOCP_ServerManager.h"
 
 
 void WaitingRoom::Init(short nRoomNumber, char * szRoomName, SOCKET& clientSock, ClientInfo* clientInfo)
@@ -14,17 +13,34 @@ void WaitingRoom::Init(short nRoomNumber, char * szRoomName, SOCKET& clientSock,
 	m_mapRoomClient.insert(make_pair(clientSock, clientInfo));
 }
 
-void WaitingRoom::AddUser(SOCKET & clientSock, ClientInfo * clientInfo)
+void WaitingRoom::AddUser(ClientInfo * clientInfo)
 {
 	clientInfo->m_roomNumber = m_nRoomNumber;
-	m_mapRoomClient.insert(make_pair(clientSock, clientInfo));
+
+	int i = 1;
+
+	while (i <= MAX_HEADCOUNT)
+	{
+		auto iter = m_mapRoomClient.insert(make_pair(i, nullptr));
+		if (iter.second)
+		{
+			iter.first->second = clientInfo;
+			clientInfo->m_JoinRoomSequence = i;
+			break;
+		}
+		else
+		{
+
+		}
+		i++;
+	}
 }
 
-void WaitingRoom::LeaveUser(SOCKET& clientSock)
+void WaitingRoom::LeaveUser(ClientInfo* clientInfo)
 {
-	m_mapRoomClient[clientSock]->m_isSuperVisor = false;
-	m_mapRoomClient[clientSock]->m_roomNumber = 0;
-	m_mapRoomClient.erase(clientSock);
+	m_mapRoomClient[clientInfo->m_JoinRoomSequence]->m_isSuperVisor = false;
+	m_mapRoomClient[clientInfo->m_JoinRoomSequence]->m_roomNumber = 0;
+	m_mapRoomClient.erase(clientInfo->m_JoinRoomSequence);
 
 	if (m_mapRoomClient.size() > 0)
 	{
@@ -38,7 +54,7 @@ void WaitingRoom::LeaveUser(SOCKET& clientSock)
 	}
 }
 
-void WaitingRoom::JoinRoomUserList(SOCKET& clientSock)
+void WaitingRoom::JoinRoomUserList()
 {
 	PACKET_JOINROOM_USERLIST packet;
 	packet.header.wIndex = PACKET_INDEX_JOINROOM_USERLIST;
@@ -51,7 +67,7 @@ void WaitingRoom::JoinRoomUserList(SOCKET& clientSock)
 		strcpy(packet.userInfo.szNickName, (*iter).second->m_szName);
 		strcpy(packet.userInfo.szLevel, (*iter).second->m_szLevel);
 		strcpy(packet.userInfo.szPosition, (*iter).second->m_szPosition);
-		
+		packet.userInfo.joinRoomSequence = (*iter).second->m_JoinRoomSequence;
 		++iter;
 		if (iter != m_mapRoomClient.end())
 			packet.bIsEnd = false;

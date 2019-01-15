@@ -38,6 +38,16 @@ void TCPManager::err_display(char * msg)
 	LocalFree(lpMsgBuf);
 }
 
+void TCPManager::SetUserInfo(UserInfo & userInfoSrc, UserInfo & userInfoDst)
+{
+	userInfoSrc.identifyKey = userInfoDst.identifyKey;
+	userInfoSrc.m_ePlayerType = userInfoDst.m_ePlayerType;
+	strcpy(userInfoSrc.szLevel, userInfoDst.szLevel);
+	strcpy(userInfoSrc.szNickName, userInfoDst.szNickName);
+	strcpy(userInfoSrc.szPosition, userInfoDst.szPosition);
+	userInfoSrc.joinRoomSequence = userInfoDst.joinRoomSequence;
+}
+
 
 
 

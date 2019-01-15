@@ -5,8 +5,6 @@
 #include "UIRoomList.h"
 #include "Player.h"
 
-#define	MAX_HEADCOUNT		9		// 방접속 최대인원수 = 값 -1
-
 UIManager*		UIManager::m_pThis = NULL;
 
 
@@ -326,11 +324,23 @@ void UIManager::RefreshJoinRoomUserList(deque<UserInfo>& dequeUserInfo)
 {
 	m_mapJoinRoomUserList;
 	UserInfo userInfo;
+	RECT rcRect;
 
-	for (auto iter = m_mapJoinRoomUserList.begin(); iter != m_mapJoinRoomUserList.end(); iter++)
+	while (!dequeUserInfo.empty())
 	{
 		userInfo = dequeUserInfo.front();
 		dequeUserInfo.pop_front();
+
+		m_mapJoinRoomUserList[userInfo.joinRoomSequence]->SetLiveObject(true);
+		m_mapJoinRoomUserList[userInfo.joinRoomSequence]->SetPositionPlayer(rcRect);
+
+		// 플레이어 위치, 분배, 드로우 만들어야됨.
+
+	}
+
+	for (auto iter = m_mapJoinRoomUserList.begin(); iter != m_mapJoinRoomUserList.end(); iter++)
+	{
+		
 
 		(*iter).second->SetLiveObject(true);
 		(*iter).second->SetPlayerInfo(userInfo);

@@ -31,9 +31,9 @@ public:
 	void	Init();
 
 	void	CreateRoom(char* roomName, SOCKET& clientSock, ClientInfo* clientInfo);
-	void	JoinRoom(int roomNumber, SOCKET& clientSock, ClientInfo* clientInfo);
+	void	JoinRoom(int roomNumber, ClientInfo* clientInfo);
 	void	JoinRoomUserListInfo(SOCKET& clientSock, int roomNumber);
-	int		LeaveRoom(int roomNumber, SOCKET& clientSock);
+	int		LeaveRoom(int roomNumber, ClientInfo* clientInfo);
 
 
 	void	SendRoomListToClient(SOCKET clientSock);

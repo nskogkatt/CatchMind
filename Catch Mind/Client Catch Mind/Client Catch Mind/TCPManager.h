@@ -36,6 +36,7 @@ private:
 	// 오류 출력 함수
 	void err_quit(char* msg);
 	void err_display(char* msg);
+	void SetUserInfo(UserInfo& userInfoSrc, UserInfo& userInfoDst);
 
 public:
 	static TCPManager* GetInstance()

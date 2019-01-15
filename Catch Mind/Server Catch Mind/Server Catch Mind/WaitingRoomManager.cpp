@@ -26,23 +26,23 @@ void WaitingRoomManager::CreateRoom(char* roomName, SOCKET & clientSock, ClientI
 	m_iRoomIndex++;
 }
 
-void WaitingRoomManager::JoinRoom(int roomNumber, SOCKET & clientSock, ClientInfo * clientInfo)
+void WaitingRoomManager::JoinRoom(int roomNumber, ClientInfo * clientInfo)
 {
-	m_mapRoom[roomNumber]->AddUser(clientSock, clientInfo);
+	m_mapRoom[roomNumber]->AddUser(clientInfo);
 	printf("[방참여] 방번호: %d, 참여자: %s, 총인원: %d / 8\n", roomNumber, clientInfo->m_szName,m_mapRoom[roomNumber]->GetRoomHeadCount());
 }
 
 void WaitingRoomManager::JoinRoomUserListInfo(SOCKET& clientSock, int roomNumber)
 {
-	m_mapRoom[roomNumber]->JoinRoomUserList(clientSock);
+	m_mapRoom[roomNumber]->JoinRoomUserList();
 }
 
-int WaitingRoomManager::LeaveRoom(int roomNumber, SOCKET& clientSock)
+int WaitingRoomManager::LeaveRoom(int roomNumber, ClientInfo* clientInfo)
 {
 	if (m_mapRoom.size() <= 0 || roomNumber == 0)
 		return 0;
 
-	m_mapRoom[roomNumber]->LeaveUser(clientSock);
+	m_mapRoom[roomNumber]->LeaveUser(clientInfo);
 
 	if (m_mapRoom[roomNumber]->GetRoomHeadCount() == 0)
 	{

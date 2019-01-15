@@ -11,6 +11,7 @@ private:
 
 	PLAYER_TYPE			m_eType;
 	int					m_identifyKey;
+	short				mP_joinRoomSequence;
 	char				m_szTypeName[NAMESIZE];		//캐릭터명
 	char				m_szNickName[NAMESIZE];
 	char				m_szLevel[LEVELSZIE];

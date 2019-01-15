@@ -290,13 +290,13 @@ bool IOCP_ServerManager::ProcessPacket(SOCKET& clientSock, char* szBuf, int& rec
 
 		WaitingRoomManager::GetInstance()->CreateRoom(packet.roomName, clientSock, m_mapClient[clientSock]);
 
-		// 방 리스트 갱신
+		// 대기실 - 방 리스트 갱신
 		for (auto iter = m_mapClient.begin(); iter != m_mapClient.end(); iter++)
 		{
 			WaitingRoomManager::GetInstance()->SendRoomListToClient(iter->first);
 		}
 
-		// 방안 유저목록 갱신
+		// 게임룸 - 유저목록 갱신
 		WaitingRoomManager::GetInstance()->JoinRoomUserListInfo(clientSock, m_mapClient[clientSock]->m_roomNumber);
 	}
 	break;
