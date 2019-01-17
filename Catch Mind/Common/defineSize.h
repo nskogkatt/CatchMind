@@ -49,7 +49,7 @@ struct UserInfo
 	char			szNickName[NAMESIZE];
 	char			szLevel[LEVELSZIE];
 	char			szPosition[POSITIONSIZE];
-	short			joinRoomSequence;;
+	short			joinRoomSequence;
 };
 
 struct RoomInfo

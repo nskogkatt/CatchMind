@@ -33,6 +33,12 @@ void UIManager::Draw()
 		iter->second->Draw();
 	}
 
+	//방 접속시 유저목록 갱신
+	if (GameManager::GetInstance()->GetGameState() == GAME_STATE_JOIN_ROOM)
+		for (auto iter = m_mapJoinRoomUserList.begin(); iter != m_mapJoinRoomUserList.end(); iter++)
+		{
+			iter->second->Draw();
+		}
 }
 
 void UIManager::Release()
@@ -322,7 +328,6 @@ void UIManager::RemoveRoomList(int nRoomNumber)
 
 void UIManager::RefreshJoinRoomUserList(deque<UserInfo>& dequeUserInfo)
 {
-	m_mapJoinRoomUserList;
 	UserInfo userInfo;
 	RECT rcRect;
 
@@ -332,21 +337,8 @@ void UIManager::RefreshJoinRoomUserList(deque<UserInfo>& dequeUserInfo)
 		dequeUserInfo.pop_front();
 
 		m_mapJoinRoomUserList[userInfo.joinRoomSequence]->SetLiveObject(true);
-		m_mapJoinRoomUserList[userInfo.joinRoomSequence]->SetPositionPlayer(rcRect);
-
+		m_mapJoinRoomUserList[userInfo.joinRoomSequence]->SetPlayerInfo(userInfo);
 		// 플레이어 위치, 분배, 드로우 만들어야됨.
-
-	}
-
-	for (auto iter = m_mapJoinRoomUserList.begin(); iter != m_mapJoinRoomUserList.end(); iter++)
-	{
-		
-
-		(*iter).second->SetLiveObject(true);
-		(*iter).second->SetPlayerInfo(userInfo);
-
-		if (dequeUserInfo.empty())
-			break;
 	}
 
 }

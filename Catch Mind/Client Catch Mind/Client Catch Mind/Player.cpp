@@ -1,6 +1,6 @@
 #include "Player.h"
 #include "Bitmap.h"
-
+#include "GameManager.h"
 
 void Player::Init(PLAYER_TYPE eType, Bitmap ** pBitmap, RECT rcRect)
 {
@@ -31,7 +31,17 @@ void Player::Init(PLAYER_TYPE eType, Bitmap ** pBitmap, RECT rcRect)
 
 void Player::Draw()
 {
+	if (m_bLive != true)
+		return;
+
 	m_pBitmap[m_eType]->Draw(m_rcRect.left, m_rcRect.top);
+
+	if (GameManager::GetInstance()->GetGameState() == GAME_STATE_JOIN_ROOM)
+	{
+		//m_pBitmap[m_eType]->DrawTextOut(m_hFont, m_rcRect.left + 200, m_rcRect.top + 30, GameManager::GetInstance()->GetPlayerNickName(), RGB(0, 0, 0), RGB(206, 206, 206), TA_CENTER);
+		//m_pBitmap[m_eType]->DrawTextOut(m_hFont, m_rcRect.left + 200, m_rcRect.top + 80, "0", RGB(0, 0, 0), RGB(206, 206, 206), TA_CENTER);
+		//m_pBitmap[m_eType]->DrawTextOut(m_hFont, m_rcRect.left + 200, m_rcRect.top + 105, "0", RGB(0, 0, 0), RGB(206, 206, 206), TA_CENTER);
+	}
 }
 
 void Player::SetPositionPlayer(RECT rcRect)
@@ -55,10 +65,48 @@ void Player::SetPlayerInfo(char * szNickName, char* szLevel, char* szPosition)
 void Player::SetPlayerInfo(UserInfo & userInfo)
 {
 	m_identifyKey = userInfo.identifyKey;
+	m_joinRoomSequence = userInfo.joinRoomSequence;
 	m_eType = userInfo.m_ePlayerType;
 	strcpy(m_szLevel, userInfo.szLevel);
 	strcpy(m_szNickName, userInfo.szNickName);
 	strcpy(m_szPosition, userInfo.szPosition);
+
+
+	switch (m_joinRoomSequence)
+	{
+	case 1:
+		m_rcRect.left = 136;
+		m_rcRect.top = 144;
+		break;
+	case 2:
+		m_rcRect.left = 136;
+		m_rcRect.top = 252;
+		break;
+	case 3:
+		m_rcRect.left = 136;
+		m_rcRect.top = 361;
+		break;
+	case 4:
+		m_rcRect.left = 136;
+		m_rcRect.top = 470;
+		break;
+	case 5:
+		m_rcRect.left = 815;
+		m_rcRect.top = 144;
+		break;
+	case 6:
+		m_rcRect.left = 815;
+		m_rcRect.top = 252;
+		break;
+	case 7:
+		m_rcRect.left = 815;
+		m_rcRect.top = 361;
+		break;
+	case 8:
+		m_rcRect.left = 815;
+		m_rcRect.top = 470;
+		break;
+	}
 }
 
 
@@ -75,6 +123,7 @@ void Player::CreateRoom(char * roomName)
 	SetPositionPlayer(rcRect);
 	strcpy(m_szRoomName, roomName);
 	m_isSuperVisor = true;
+	m_bLive = false;
 }
 
 char * Player::GetNickName()

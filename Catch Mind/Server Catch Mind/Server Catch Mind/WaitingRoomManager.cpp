@@ -44,6 +44,7 @@ int WaitingRoomManager::LeaveRoom(int roomNumber, ClientInfo* clientInfo)
 
 	m_mapRoom[roomNumber]->LeaveUser(clientInfo);
 
+	printf("[방나감] 방번호: %d, 나간사람: %s, 남은인원: %d / 8\n", roomNumber, clientInfo->m_szName, m_mapRoom[roomNumber]->GetRoomHeadCount());
 	if (m_mapRoom[roomNumber]->GetRoomHeadCount() == 0)
 	{
 		delete m_mapRoom[roomNumber];
@@ -51,6 +52,7 @@ int WaitingRoomManager::LeaveRoom(int roomNumber, ClientInfo* clientInfo)
 		m_mapRoom.erase(roomNumber);
 		return roomNumber;
 	}
+
 }
 
 void WaitingRoomManager::SendRoomListToClient(SOCKET clientSock)

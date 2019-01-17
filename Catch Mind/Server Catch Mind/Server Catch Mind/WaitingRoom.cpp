@@ -9,8 +9,9 @@ void WaitingRoom::Init(short nRoomNumber, char * szRoomName, SOCKET& clientSock,
 	m_nSupervisorKey = clientSock;
 	strcpy(m_szSuperVisorName, clientInfo->m_szName);
 	clientInfo->m_roomNumber = nRoomNumber;
+	clientInfo->m_JoinRoomSequence = 1;
 
-	m_mapRoomClient.insert(make_pair(clientSock, clientInfo));
+	m_mapRoomClient.insert(make_pair(clientInfo->m_JoinRoomSequence, clientInfo));
 }
 
 void WaitingRoom::AddUser(ClientInfo * clientInfo)
@@ -74,8 +75,8 @@ void WaitingRoom::JoinRoomUserList()
 		else
 			packet.bIsEnd = true;
 
-		for (auto iter = m_mapRoomClient.begin(); iter != m_mapRoomClient.end();)
-			send(iter->first, (const char*)&packet, sizeof(packet), 0);
+		for (auto iter = m_mapRoomClient.begin(); iter != m_mapRoomClient.end(); iter++)
+			send(iter->second->m_sock, (const char*)&packet, sizeof(packet), 0);
 	}
 }
 

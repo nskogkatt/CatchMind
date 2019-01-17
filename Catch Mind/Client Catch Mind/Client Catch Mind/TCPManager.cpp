@@ -211,7 +211,7 @@ bool TCPManager::ProcessPacket(char * szBuf, int& recvBytes)
 
 		if (packet.bIsEnd)
 		{
-			// °ÔÀÓ·ë Playre UI Refresh.
+			// °ÔÀÓ·ë Player UI Refresh.
 			UIManager::GetInstance()->RefreshJoinRoomUserList(m_dequeJoinRoomUserInfo);
 			m_dequeJoinRoomUserInfo.clear();
 		}

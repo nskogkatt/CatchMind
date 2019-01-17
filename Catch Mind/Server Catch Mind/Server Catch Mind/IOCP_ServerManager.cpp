@@ -252,7 +252,7 @@ bool IOCP_ServerManager::ProcessPacket(SOCKET& clientSock, char* szBuf, int& rec
 		memcpy(&packet, m_mapClient[clientSock]->m_Buf, sizeof(PACKET_PROGRAM_EXIT));
 
 		m_mapClient[clientSock]->m_isLeave = true;
-		short roomNumber = WaitingRoomManager::GetInstance()->LeaveRoom(m_mapClient[clientSock]->m_roomNumber, clientSock);
+		short roomNumber = WaitingRoomManager::GetInstance()->LeaveRoom(m_mapClient[clientSock]->m_roomNumber, m_mapClient[clientSock]);
 
 		if (roomNumber > 0)
 		{
@@ -305,7 +305,7 @@ bool IOCP_ServerManager::ProcessPacket(SOCKET& clientSock, char* szBuf, int& rec
 		PACKET_JOIN_ROOM	packet;
 		memcpy(&packet, m_mapClient[clientSock]->m_Buf, header.wLen);
 
-		WaitingRoomManager::GetInstance()->JoinRoom(packet.roomNumber, clientSock, m_mapClient[clientSock]);
+		WaitingRoomManager::GetInstance()->JoinRoom(packet.roomNumber,m_mapClient[clientSock]);
 
 		// 방안 유저목록 갱신
 		WaitingRoomManager::GetInstance()->JoinRoomUserListInfo(clientSock, m_mapClient[clientSock]->m_roomNumber);

@@ -99,7 +99,6 @@ struct PACKET_JOINROOM_USERLIST
 {
 	PACKET_HEADER	header;
 	UserInfo		userInfo;
-	short			joinRoomSequence;
 	bool			bIsEnd;
 };
 
