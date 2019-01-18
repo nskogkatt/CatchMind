@@ -29,6 +29,7 @@ public:
 	void SetPositionY(int y);
 	void SetSlectRoomList(bool set);
 	short GetRoomNumber() const;
+	short GetHeadCount() const;
 
 	UIRoomList();
 	~UIRoomList();

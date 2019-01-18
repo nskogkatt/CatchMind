@@ -64,7 +64,8 @@ public:
 	void HideCreateRoomWindowPop();
 
 	// ¹æ Join
-	short JoinRoom();
+	short GetSelectedRoomNumber();
+	short GetSelectedHeadCount();
 
 	void AddUserList(int nIdentifyKey, char* szNickName, char* szLevel, char* szPosition);
 	void RemoveUserList(int nIdentifyKey);

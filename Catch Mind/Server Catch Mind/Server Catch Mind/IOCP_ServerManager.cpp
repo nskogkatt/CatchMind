@@ -40,6 +40,22 @@ void IOCP_ServerManager::err_display(int errcode)
 	LocalFree(lpMsgBuf);
 }
 
+void IOCP_ServerManager::LeaveGameRoom(SOCKET clientSock)
+{
+	short roomNumber = WaitingRoomManager::GetInstance()->LeaveRoom(m_mapClient[clientSock]->m_roomNumber, m_mapClient[clientSock]);
+
+	if (roomNumber > 0)
+	{
+		// 방 제거 리스트 갱신
+		for (auto iter = m_mapClient.begin(); iter != m_mapClient.end(); iter++)
+		{
+			if (iter->first == clientSock)
+				continue;
+			WaitingRoomManager::GetInstance()->SendRemoveRoomList(roomNumber, iter->first);
+		}
+	}
+}
+
 
 
 
@@ -252,18 +268,7 @@ bool IOCP_ServerManager::ProcessPacket(SOCKET& clientSock, char* szBuf, int& rec
 		memcpy(&packet, m_mapClient[clientSock]->m_Buf, sizeof(PACKET_PROGRAM_EXIT));
 
 		m_mapClient[clientSock]->m_isLeave = true;
-		short roomNumber = WaitingRoomManager::GetInstance()->LeaveRoom(m_mapClient[clientSock]->m_roomNumber, m_mapClient[clientSock]);
-
-		if (roomNumber > 0)
-		{
-			// 방 제거 리스트 갱신
-			for (auto iter = m_mapClient.begin(); iter != m_mapClient.end(); iter++)
-			{
-				if (iter->first == clientSock)
-					continue;
-				WaitingRoomManager::GetInstance()->SendRemoveRoomList(roomNumber, iter->first);
-			}
-		}
+		LeaveGameRoom(clientSock);		// 방 나가기
 
 	}
 	break;

@@ -67,6 +67,10 @@ unsigned int WINAPI WorkerThread(void* arg)
 				DWORD temp1, temp2;
 				WSAGetOverlappedResult(ptr->sock, &ptr->overlapped, &temp1, FALSE, &temp2);
 				err_display("WSAGetOverlappedResult()");
+				
+				//오류나서 클라이언트 강제종료시 생성된 방 나가기 및 클라이언트 종료
+				IOCP_ServerManager::GetInstance()->LeaveGameRoom(ptr->sock);
+				IOCP_ServerManager::GetInstance()->LeaveClient(ptr->sock);
 			}
 			closesocket(ptr->sock);
 			printf("[TCP 서버] 클라이언트 종료: IP 주소 = %s, 포트번호 = %d \n", inet_ntoa(clientAddr.sin_addr), ntohs(clientAddr.sin_port));

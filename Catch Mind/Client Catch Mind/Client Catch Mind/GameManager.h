@@ -65,6 +65,7 @@ public:
 
 	void SetPlayerCharacter(UI_TYPE eType, char* szName);
 	void SetPlayerInfo(char* szNickName, char* szLevel, char* szPosition);
+	void SetPlayerLive(bool bLive);
 
 	char* GetPlayerCharacterName();
 	int GetPlayerCharacterType();

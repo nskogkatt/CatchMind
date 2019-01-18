@@ -110,7 +110,6 @@ void Player::SetPlayerInfo(UserInfo & userInfo)
 }
 
 
-
 PLAYER_TYPE Player::GetPlayerType() const
 {
 	return m_eType;

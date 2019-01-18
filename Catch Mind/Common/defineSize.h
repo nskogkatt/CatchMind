@@ -16,7 +16,8 @@
 #define IDC_PASSWORD	2001
 #define IDC_CHATTING	2002
 
-#define	MAX_HEADCOUNT		9		// 방접속 최대인원수 = 값 -1
+#define ROOM_MAX_SIZE	8
+#define	MAX_HEADCOUNT	9		// 방접속 최대인원수 = 값 -1
 
 enum PLAYER_TYPE
 {

@@ -5,6 +5,8 @@
 #include "UIRoomList.h"
 #include "Player.h"
 
+
+
 UIManager*		UIManager::m_pThis = NULL;
 
 
@@ -269,11 +271,21 @@ void UIManager::HideCreateRoomWindowPop()
 	ShowWindow(m_hEdit[EDIT_TYPE_CREATE_PASSWORD], SW_HIDE);
 }
 
-short UIManager::JoinRoom()
+short UIManager::GetSelectedRoomNumber()
 {
 	if (m_prevSelectRoomList != m_mapRoomList.end())
 	{
 		return m_prevSelectRoomList->second->GetRoomNumber();
+	}
+
+	return 0;
+}
+
+short UIManager::GetSelectedHeadCount()
+{
+	if (m_prevSelectRoomList != m_mapRoomList.end())
+	{
+		return m_prevSelectRoomList->second->GetHeadCount();
 	}
 
 	return 0;
@@ -311,7 +323,7 @@ void UIManager::AddRoomList(int nRoomNumber, char * roomName, int roomSize, char
 	if (iter.second)
 	{
 		UIRoomList* pRoomList = new UIRoomList;
-		pRoomList->InitRoomInfo(nRoomNumber, roomName, superVisorName, 0, roomSize);
+		pRoomList->InitRoomInfo(nRoomNumber, roomName, superVisorName, roomSize, ROOM_MAX_SIZE);
 
 		iter.first->second = pRoomList;
 	}
@@ -394,7 +406,9 @@ void UIManager::InitUIObjects()
 		iter->second->SetPosition(rcRect);
 	}
 
-	// JoinRoomUser List 초기화
+	GameManager::GetInstance()->SetPlayerLive(false);
+
+	// JoinRoomUser List 초기화 ??
 
 }
 
@@ -498,6 +512,7 @@ void UIManager::SettingSelectCharacterUI()
 	m_mapUIObjects[UI_TYPE_CHARACTER_TOMATO]->SetTypeName("토마토룽");
 	m_mapUIObjects[UI_TYPE_CHARACTER_TOMATO]->SetPosition(rcRect);
 
+	GameManager::GetInstance()->SetPlayerLive(true);
 }
 
 void UIManager::SettingWaittingRoomUI()
@@ -534,6 +549,8 @@ void UIManager::SettingWaittingRoomUI()
 	m_mapUIObjects[UI_TYPE_ROOM_LIST]->SetTypeName("");
 	m_mapUIObjects[UI_TYPE_ROOM_LIST]->SetPosition(rcRect);
 
+
+	GameManager::GetInstance()->SetPlayerLive(true);
 
 	ShowWindow(m_hEdit[EDIT_TYPE_WAITING_ROOM_CHATTING], SW_SHOW);
 }

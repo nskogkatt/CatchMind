@@ -239,7 +239,7 @@ void TCPManager::SendModifyPlayerTypeToServer(PLAYER_TYPE type)
 	PACKET_MODIFY_PLAYERTYPE packet;
 	packet.header.wIndex = PACKET_INDEX_MODIFY_PLAYERTYPE;
 	packet.header.wLen = sizeof(PACKET_MODIFY_PLAYERTYPE);
-	packet.type = PLAYER_TYPE_CHARACTER_ONION;
+	packet.type = (PLAYER_TYPE)GameManager::GetInstance()->GetPlayerCharacterType();
 	send(m_Sock, (const char*)&packet, packet.header.wLen, 0);
 }
 

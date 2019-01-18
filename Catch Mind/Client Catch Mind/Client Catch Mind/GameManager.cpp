@@ -40,8 +40,7 @@ void GameManager::Init(HWND hWnd, HINSTANCE hInstance, LONG EditSubProc)
 	HDC hdc = GetDC(hWnd);
 
 	ResManager::GetInstance()->Init(hdc);
-	UIManager::GetInstance()->Init(hWnd, hInstance, EditSubProc);
-	UIManager::GetInstance()->SettingSelectCharacterUI();
+
 
 	m_strTextChatting = "";
 
@@ -54,6 +53,10 @@ void GameManager::Init(HWND hWnd, HINSTANCE hInstance, LONG EditSubProc)
 	SetRect(&rcRect, 500, 600, 0, 0);
 	m_pPlayer = new Player;
 	m_pPlayer->Init(PLAYER_TYPE_CHARACTER_ONION, ResManager::GetInstance()->GetBitmap(), rcRect);
+
+	//UI 초기화 및 세팅
+	UIManager::GetInstance()->Init(hWnd, hInstance, EditSubProc);
+	UIManager::GetInstance()->SettingSelectCharacterUI();
 
 	ReleaseDC(hWnd, hdc);
 }
@@ -98,14 +101,15 @@ void GameManager::JoinWaittingRoom()
 
 	UIManager::GetInstance()->InitUIObjects();
 	UIManager::GetInstance()->SettingWaittingRoomUI();
-	
+
 	TCPManager::GetInstance()->SendModifyPlayerTypeToServer(m_pPlayer->GetPlayerType());
 }
 
 void GameManager::JoinGameRoom()
 {
-	short roomNumber = UIManager::GetInstance()->JoinRoom();
-	if (roomNumber > 0)
+	short roomNumber = UIManager::GetInstance()->GetSelectedRoomNumber();
+	short headCount = UIManager::GetInstance()->GetSelectedHeadCount();
+	if (roomNumber > 0 && headCount < 8)
 	{
 		// 서버로 방 접속정보 보냄
 		TCPManager::GetInstance()->SendJoinRoomToServer(roomNumber);
@@ -120,7 +124,10 @@ void GameManager::JoinGameRoom()
 		return;
 	}
 
-	MessageBox(m_hWnd, "방 접속 실패!", "Error!!", MB_OK);
+	if (headCount == ROOM_MAX_SIZE)
+		MessageBox(m_hWnd, "방이 꽉찼습니다.", "Error!!", MB_OK);
+	else
+		MessageBox(m_hWnd, "방이 선택되지 않았습니다.", "Error!!", MB_OK);
 }
 
 
@@ -162,6 +169,11 @@ void GameManager::SetPlayerInfo(char * szNickName, char* szLevel, char* szPositi
 	m_pPlayer->SetPlayerInfo(szNickName, szLevel, szPosition);
 }
 
+void GameManager::SetPlayerLive(bool bLive)
+{
+	m_pPlayer->SetLiveObject(bLive);
+}
+
 char* GameManager::GetPlayerCharacterName()
 {
 	return m_pPlayer->GetTypeName();
@@ -192,7 +204,7 @@ WNDPROC GameManager::GetEditOldHandleUI(EDIT_TYPE type)
 void GameManager::AddTextChatting(char * strText)
 {
 	m_strTextChatting.assign(strText);
-	
+
 	UIManager::GetInstance()->AddChattingText(m_strTextChatting);
 }
 

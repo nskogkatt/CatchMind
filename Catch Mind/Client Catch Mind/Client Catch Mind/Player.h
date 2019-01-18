@@ -29,6 +29,8 @@ public:
 	void SetPlayerCharacter(int eType, char* szName);
 	void SetPlayerInfo(char * szNickName, char* szLevel, char* szPosition);
 	void SetPlayerInfo(UserInfo& userInfo);
+
+
 	PLAYER_TYPE GetPlayerType() const;
 
 	void CreateRoom(char* roomName);

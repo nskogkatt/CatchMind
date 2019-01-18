@@ -65,6 +65,11 @@ short UIRoomList::GetRoomNumber() const
 	return m_roomNumber;
 }
 
+short UIRoomList::GetHeadCount() const
+{
+	return m_headCount;
+}
+
 
 UIRoomList::UIRoomList()
 {

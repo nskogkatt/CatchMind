@@ -40,6 +40,7 @@ class IOCP_ServerManager
 	void err_display(char* msg);
 	void err_display(int errcode);
 
+
 public:
 	static IOCP_ServerManager* GetInstance()
 	{
@@ -60,6 +61,7 @@ public:
 	int GetClientRecvBytes(SOCKET& clientSock);
 	bool GetIsClientLeave(SOCKET& clientSock);
 	void LeaveClient(SOCKET& clientSock);
+	void LeaveGameRoom(SOCKET clientSock);
 
 	HANDLE GetHandleCompletionPort() const
 	{
