@@ -49,21 +49,21 @@ void IOCP_ServerManager::RefreshUserListToClient()
 
 	for (auto iter = m_mapClient.begin(); iter != m_mapClient.end(); iter++)
 	{
-		packetList.userInfo.identifyKey = (*iter).first;
-		strcpy(packetList.userInfo.szNickName, (*iter).second->m_szName);
-		strcpy(packetList.userInfo.szLevel, (*iter).second->m_szLevel);
-		strcpy(packetList.userInfo.szPosition, (*iter).second->m_szPosition);
-
-		for (auto iter = m_mapClient.begin(); iter != m_mapClient.end(); iter++)
+		for (auto iter2 = m_mapClient.begin(); iter2 != m_mapClient.end(); iter2++)
 		{
-			auto iter2 = iter;
-			if (++iter2 != m_mapClient.end())
+			packetList.userInfo.identifyKey = (*iter2).first;
+			strcpy(packetList.userInfo.szNickName, (*iter2).second->m_szName);
+			strcpy(packetList.userInfo.szLevel, (*iter2).second->m_szLevel);
+			strcpy(packetList.userInfo.szPosition, (*iter2).second->m_szPosition);
+
+			auto iter3 = iter2;
+			if (++iter3 != m_mapClient.end())
 				packetList.bIsEnd = false;
 			else
 				packetList.bIsEnd = true;
 
 			send(iter->first, (const char*)&packetList, sizeof(PACKET_USER_LIST), 0);
-			printf("send 2 \n");
+			printf("send 익명%d <- 익명%d  \n",iter->first, iter2->first);
 		}
 	}
 
@@ -206,7 +206,7 @@ void IOCP_ServerManager::ProcessSocketMessage()
 
 
 		retval = send(client_sock, ptr->wsabuf.buf, ptr->wsabuf.len, 0);
-		printf("send 1 \n");
+		printf("send ptr->wsabuf, 익명%d \n", client_sock);
 		if (retval == SOCKET_ERROR)
 		{
 			if (WSAGetLastError() != ERROR_IO_PENDING)
@@ -354,6 +354,8 @@ bool IOCP_ServerManager::ProcessPacket(SOCKET& clientSock, char* szBuf, int& rec
 		PACKET_REFRESH_ROOMLIST packet;
 		memcpy(&packet, m_mapClient[clientSock]->m_Buf, header.wLen);
 
+		// 방안 유저목록 갱신
+		WaitingRoomManager::GetInstance()->JoinRoomUserListInfo(clientSock, m_mapClient[clientSock]->m_roomNumber);
 
 	}
 	break;

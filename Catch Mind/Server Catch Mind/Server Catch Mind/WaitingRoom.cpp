@@ -61,22 +61,25 @@ void WaitingRoom::JoinRoomUserList()
 	packet.header.wIndex = PACKET_INDEX_JOINROOM_USERLIST;
 	packet.header.wLen = sizeof(packet);
 
-	for (auto iter = m_mapRoomClient.begin(); iter != m_mapRoomClient.end();)
+	for (auto iter = m_mapRoomClient.begin(); iter != m_mapRoomClient.end();iter++)
 	{
-		packet.userInfo.identifyKey = (*iter).second->m_sock;
-		packet.userInfo.m_ePlayerType = (*iter).second->m_ePlayerType;
-		strcpy(packet.userInfo.szNickName, (*iter).second->m_szName);
-		strcpy(packet.userInfo.szLevel, (*iter).second->m_szLevel);
-		strcpy(packet.userInfo.szPosition, (*iter).second->m_szPosition);
-		packet.userInfo.joinRoomSequence = (*iter).second->m_JoinRoomSequence;
-		++iter;
-		if (iter != m_mapRoomClient.end())
-			packet.bIsEnd = false;
-		else
-			packet.bIsEnd = true;
+		for (auto iter2 = m_mapRoomClient.begin(); iter2 != m_mapRoomClient.end(); iter2++)
+		{
+			// 방인원 정보를 클라이언트에게 전송
+			packet.userInfo.identifyKey = (*iter2).second->m_sock;
+			packet.userInfo.m_ePlayerType = (*iter2).second->m_ePlayerType;
+			strcpy(packet.userInfo.szNickName, (*iter2).second->m_szName);
+			strcpy(packet.userInfo.szLevel, (*iter2).second->m_szLevel);
+			strcpy(packet.userInfo.szPosition, (*iter2).second->m_szPosition);
+			packet.userInfo.joinRoomSequence = (*iter2).second->m_JoinRoomSequence;
+			auto iter3 = iter2;
+			if (++iter3 != m_mapRoomClient.end())
+				packet.bIsEnd = false;
+			else
+				packet.bIsEnd = true;
 
-		for (auto iter = m_mapRoomClient.begin(); iter != m_mapRoomClient.end(); iter++)
 			send(iter->second->m_sock, (const char*)&packet, sizeof(packet), 0);
+		}
 	}
 }
 

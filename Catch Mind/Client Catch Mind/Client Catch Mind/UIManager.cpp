@@ -348,7 +348,7 @@ void UIManager::RefreshRoomList(deque<RoomInfo>&	dequeRoomList)
 		}
 		else
 		{
-			//MessageBox(NULL, "Create Room Failed..", "Caution!", MB_OK);
+			iter.first->second->InitRoomInfo(roomInfo.roomNumber, roomInfo.roomName, roomInfo.superVisorName, roomInfo.roomSize, ROOM_MAX_SIZE);
 		}
 	}
 }
