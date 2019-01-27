@@ -40,6 +40,45 @@ void IOCP_ServerManager::err_display(int errcode)
 	LocalFree(lpMsgBuf);
 }
 
+void IOCP_ServerManager::RefreshUserListToClient()
+{
+	PACKET_USER_LIST packetList;
+	packetList.header.wIndex = PACKET_INDEX_USER_LIST;
+	packetList.header.wLen = sizeof(PACKET_USER_LIST);
+	packetList.userCount = m_mapClient.size();
+
+	for (auto iter = m_mapClient.begin(); iter != m_mapClient.end(); iter++)
+	{
+		packetList.userInfo.identifyKey = (*iter).first;
+		strcpy(packetList.userInfo.szNickName, (*iter).second->m_szName);
+		strcpy(packetList.userInfo.szLevel, (*iter).second->m_szLevel);
+		strcpy(packetList.userInfo.szPosition, (*iter).second->m_szPosition);
+
+		for (auto iter = m_mapClient.begin(); iter != m_mapClient.end(); iter++)
+		{
+			auto iter2 = iter;
+			if (++iter2 != m_mapClient.end())
+				packetList.bIsEnd = false;
+			else
+				packetList.bIsEnd = true;
+
+			send(iter->first, (const char*)&packetList, sizeof(PACKET_USER_LIST), 0);
+			printf("send 2 \n");
+		}
+	}
+
+}
+
+void IOCP_ServerManager::FeedBackJoinRoomToClient(SOCKET & clientSock, bool bIsSuccess)
+{
+	PACKET_FEEDBACK_JOIN_ROOM packet;
+	packet.header.wIndex = PACKET_INDEX_FEEDBACK_JOIN_ROOM;
+	packet.header.wLen = sizeof(PACKET_INDEX_FEEDBACK_JOIN_ROOM);
+	packet.bIsSuccess = bIsSuccess;
+
+	send(clientSock, (const char*)&packet, packet.header.wLen, 0);
+}
+
 void IOCP_ServerManager::LeaveGameRoom(SOCKET clientSock)
 {
 	short roomNumber = WaitingRoomManager::GetInstance()->LeaveRoom(m_mapClient[clientSock]->m_roomNumber, m_mapClient[clientSock]);
@@ -179,25 +218,8 @@ void IOCP_ServerManager::ProcessSocketMessage()
 
 
 		// 유저 접속 목록 갱신
-		int i = 0;
-		PACKET_USER_LIST packetList;
-		packetList.header.wIndex = PACKET_INDEX_USER_LIST;
-		packetList.header.wLen = sizeof(PACKET_USER_LIST);
-		packetList.userCount = m_mapClient.size();
+		RefreshUserListToClient();
 
-		for (auto iter = m_mapClient.begin(); iter != m_mapClient.end(); iter++)
-		{
-			packetList.userInfo.identifyKey = (*iter).first;
-			strcpy(packetList.userInfo.szNickName, (*iter).second->m_szName);
-			strcpy(packetList.userInfo.szLevel, (*iter).second->m_szLevel);
-			strcpy(packetList.userInfo.szPosition, (*iter).second->m_szPosition);
-
-			for (auto iter = m_mapClient.begin(); iter != m_mapClient.end(); iter++)
-			{
-				send(iter->first, (const char*)&packetList, sizeof(PACKET_USER_LIST), 0);
-				printf("send 2 \n");
-			}
-		}
 
 		// 방 목록 갱신
 		if (WaitingRoomManager::GetInstance()->GetRoomCount() > 0)
@@ -310,10 +332,28 @@ bool IOCP_ServerManager::ProcessPacket(SOCKET& clientSock, char* szBuf, int& rec
 		PACKET_JOIN_ROOM	packet;
 		memcpy(&packet, m_mapClient[clientSock]->m_Buf, header.wLen);
 
-		WaitingRoomManager::GetInstance()->JoinRoom(packet.roomNumber,m_mapClient[clientSock]);
+		if (WaitingRoomManager::GetInstance()->JoinRoom(packet.roomNumber, m_mapClient[clientSock]))
+		{
+			//방 접속 성공을 클라이언트에게 알림
+			FeedBackJoinRoomToClient(clientSock, true);
+		}
+		else
+		{
+			FeedBackJoinRoomToClient(clientSock, false);
+		}
+
 
 		// 방안 유저목록 갱신
 		WaitingRoomManager::GetInstance()->JoinRoomUserListInfo(clientSock, m_mapClient[clientSock]->m_roomNumber);
+
+
+	}
+	break;
+	case PACKET_INDEX_REFRESH_ROOMLIST:
+	{
+		PACKET_REFRESH_ROOMLIST packet;
+		memcpy(&packet, m_mapClient[clientSock]->m_Buf, header.wLen);
+
 
 	}
 	break;

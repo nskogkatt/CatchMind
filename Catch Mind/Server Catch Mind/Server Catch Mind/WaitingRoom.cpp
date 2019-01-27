@@ -96,10 +96,10 @@ PACKET_ROOM_LIST & WaitingRoom::GetRoomInfo()
 	packet.header.wIndex = PACKET_INDEX_ROOM_LIST;
 	packet.header.wLen = sizeof(PACKET_ROOM_LIST);
 
-	strcpy(packet.roomName, m_szRoomName);
-	packet.roomNumber = m_nRoomNumber;
-	packet.roomSize = m_mapRoomClient.size();
-	strcpy(packet.superVisorName, m_szSuperVisorName);
+	strcpy(packet.roomInfo.roomName, m_szRoomName);
+	packet.roomInfo.roomNumber = m_nRoomNumber;
+	packet.roomInfo.roomSize = m_mapRoomClient.size();
+	strcpy(packet.roomInfo.superVisorName, m_szSuperVisorName);
 
 	return packet;
 }

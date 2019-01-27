@@ -48,6 +48,25 @@ void TCPManager::SetUserInfo(UserInfo & userInfoSrc, UserInfo & userInfoDst)
 	userInfoSrc.joinRoomSequence = userInfoDst.joinRoomSequence;
 }
 
+void TCPManager::SetRoomInfo(RoomInfo& roomInfoSrc, RoomInfo & roomInfoDst)
+{
+	strcpy(roomInfoSrc.roomName, roomInfoDst.roomName);
+	roomInfoSrc.roomNumber = roomInfoDst.roomNumber;
+	roomInfoSrc.roomSize = roomInfoDst.roomSize;
+	strcpy(roomInfoSrc.superVisorName, roomInfoDst.superVisorName);
+
+}
+
+void TCPManager::RequestRefreshRoomListToServer()
+{
+	// 서버에 방목록 새로고침 요청
+	PACKET_REFRESH_ROOMLIST packet;
+	packet.header.wIndex = PACKET_INDEX_REFRESH_ROOMLIST;
+	packet.header.wLen = sizeof(PACKET_REFRESH_ROOMLIST);
+
+	send(m_Sock, (const char*)&packet, packet.header.wLen, 0);
+}
+
 
 
 
@@ -120,7 +139,7 @@ void TCPManager::Release()
 	packet.identifyKey = 0;
 
 	//서버에 종료 알림
-	send(m_Sock, (const char*)&packet, sizeof(PACKET_PROGRAM_EXIT),0);
+	send(m_Sock, (const char*)&packet, sizeof(PACKET_PROGRAM_EXIT), 0);
 
 	//소켓 종료
 	shutdown(m_Sock, SD_BOTH);
@@ -160,11 +179,23 @@ bool TCPManager::ProcessPacket(char * szBuf, int& recvBytes)
 	break;
 	case PACKET_INDEX_USER_LIST:
 	{
-		// 유저 목록
+		// 유저 목록 갱신
 		PACKET_USER_LIST packet;
 		memcpy(&packet, m_szBuf, header.wLen);
-		
-		GameManager::GetInstance()->AddUserList(packet.userInfo.identifyKey, packet.userInfo.szNickName, packet.userInfo.szLevel, packet.userInfo.szPosition);
+
+
+		UserInfo userInfo;
+		SetUserInfo(userInfo, packet.userInfo);
+
+		m_dequeUIUserList.push_back(userInfo);
+
+		if (packet.bIsEnd)
+		{
+			// 게임룸 Player UI Refresh.
+			UIManager::GetInstance()->RefreshUserList(m_dequeUIUserList);
+			m_dequeJoinRoomUserInfo.clear();
+		}
+
 	}
 	break;
 	case PACKET_INDEX_LEAVE_CLIENT:
@@ -172,7 +203,7 @@ bool TCPManager::ProcessPacket(char * szBuf, int& recvBytes)
 		PACKET_LEAVE_CLIENT packet;
 		memcpy(&packet, m_szBuf, header.wLen);
 
-		GameManager::GetInstance()->RemoveUserList(packet.identifyKey);
+		UIManager::GetInstance()->RemoveUserList(packet.identifyKey);
 	}
 	break;
 	case PACKET_INDEX_SEND_TEXTMESSAGE:
@@ -188,7 +219,17 @@ bool TCPManager::ProcessPacket(char * szBuf, int& recvBytes)
 		PACKET_ROOM_LIST packet;
 		memcpy(&packet, m_szBuf, header.wLen);
 
-		UIManager::GetInstance()->AddRoomList(packet.roomNumber, packet.roomName, packet.roomSize, packet.superVisorName);
+		RoomInfo	roomInfo;
+		SetRoomInfo(roomInfo, packet.roomInfo);
+
+		m_dequeUIRoomList.push_back(roomInfo);
+
+		if (packet.bIsEnd)
+		{
+			// roomInfo 구조체로 넘길것
+			UIManager::GetInstance()->RefreshRoomList(m_dequeUIRoomList);
+			m_dequeUIRoomList.clear();
+		}
 	}
 	break;
 	case PACKET_INDEX_REMOVE_ROOM:
@@ -214,6 +255,18 @@ bool TCPManager::ProcessPacket(char * szBuf, int& recvBytes)
 			// 게임룸 Player UI Refresh.
 			UIManager::GetInstance()->RefreshJoinRoomUserList(m_dequeJoinRoomUserInfo);
 			m_dequeJoinRoomUserInfo.clear();
+		}
+	}
+	break;
+	case PACKET_INDEX_FEEDBACK_JOIN_ROOM:
+	{
+		PACKET_FEEDBACK_JOIN_ROOM packet;
+		memcpy(&packet, m_szBuf, header.wLen);
+
+		GameManager::GetInstance()->FeedBackJoinRoom(packet.bIsSuccess);
+		if (!packet.bIsSuccess)
+		{
+			RequestRefreshRoomListToServer();
 		}
 	}
 	break;

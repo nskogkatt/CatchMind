@@ -113,14 +113,7 @@ void GameManager::JoinGameRoom()
 	{
 		// 서버로 방 접속정보 보냄
 		TCPManager::GetInstance()->SendJoinRoomToServer(roomNumber);
-
-		m_eState = GAME_STATE_JOIN_ROOM;
-
-		// UI초기화 후, 게임방 UI 셋팅
-		UIManager::GetInstance()->InitUIObjects();
-		UIManager::GetInstance()->SettingWaitingRoomInGameUI();
-
-
+		
 		return;
 	}
 
@@ -128,6 +121,24 @@ void GameManager::JoinGameRoom()
 		MessageBox(m_hWnd, "방이 꽉찼습니다.", "Error!!", MB_OK);
 	else
 		MessageBox(m_hWnd, "방이 선택되지 않았습니다.", "Error!!", MB_OK);
+}
+
+void GameManager::FeedBackJoinRoom(bool bIsSucces)
+{
+	if (bIsSucces)
+	{
+		m_eState = GAME_STATE_JOIN_ROOM;
+
+		// UI초기화 후, 게임방 UI 셋팅
+		UIManager::GetInstance()->InitUIObjects();
+		UIManager::GetInstance()->SettingWaitingRoomInGameUI();
+	}
+	else
+	{
+		MessageBox(m_hWnd, "방이 없습니다.", "Error!!", MB_OK);
+	}
+
+	
 }
 
 
@@ -148,15 +159,6 @@ void GameManager::ExecuteCreateRoom()
 	UIManager::GetInstance()->SettingWaitingRoomInGameUI();
 }
 
-void GameManager::AddUserList(int nIdentifyKey, char * szName, char * szLevel, char * szPosition)
-{
-	UIManager::GetInstance()->AddUserList(nIdentifyKey, szName, szLevel, szPosition);
-}
-
-void GameManager::RemoveUserList(int nIdentifyKey)
-{
-	UIManager::GetInstance()->RemoveUserList(nIdentifyKey);
-}
 
 
 void GameManager::SetPlayerCharacter(UI_TYPE eType, char* szName)

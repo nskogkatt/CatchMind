@@ -13,6 +13,8 @@ enum PACKET_INDEX
 	PACKET_INDEX_SEND_TEXTMESSAGE,
 	PACKET_INDEX_CREATE_ROOM,
 	PACKET_INDEX_JOIN_ROOM,
+	PACKET_INDEX_FEEDBACK_JOIN_ROOM,
+	PACKET_INDEX_REFRESH_ROOMLIST,
 	PACKET_INDEX_REMOVE_ROOM,
 	PACKET_INDEX_ROOM_LIST,
 	PACKET_INDEX_JOINROOM_USERLIST,
@@ -46,7 +48,7 @@ struct PACKET_USER_LIST
 	PACKET_HEADER	header;
 	WORD			userCount;
 	UserInfo		userInfo;
-
+	bool			bIsEnd;
 };
 
 struct PACKET_PROGRAM_EXIT
@@ -74,11 +76,24 @@ struct PACKET_CREATE_ROOM
 	char			roomName[ROOM_NAMESIZE];
 };
 
+
 struct PACKET_JOIN_ROOM
 {
 	PACKET_HEADER	header;
 	short			roomNumber;
 };
+
+struct PACKET_FEEDBACK_JOIN_ROOM
+{
+	PACKET_HEADER	header;
+	bool			bIsSuccess;
+};
+
+struct PACKET_REFRESH_ROOMLIST
+{
+	PACKET_HEADER	header;
+};
+
 
 struct PACKET_REMOVE_ROOM
 {
@@ -89,10 +104,8 @@ struct PACKET_REMOVE_ROOM
 struct PACKET_ROOM_LIST
 {
 	PACKET_HEADER	header;
-	short			roomNumber;
-	char			roomName[ROOM_NAMESIZE];
-	char			superVisorName[NAMESIZE];
-	short			roomSize;
+	RoomInfo		roomInfo;
+	bool			bIsEnd;
 };
 
 struct PACKET_JOINROOM_USERLIST

@@ -40,6 +40,8 @@ class IOCP_ServerManager
 	void err_display(char* msg);
 	void err_display(int errcode);
 
+	void RefreshUserListToClient();		//유저목록 갱신
+	void FeedBackJoinRoomToClient(SOCKET& clientSock, bool bIsSuccess);
 
 public:
 	static IOCP_ServerManager* GetInstance()

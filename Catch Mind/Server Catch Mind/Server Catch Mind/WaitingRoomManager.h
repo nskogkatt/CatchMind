@@ -31,7 +31,7 @@ public:
 	void	Init();
 
 	void	CreateRoom(char* roomName, SOCKET& clientSock, ClientInfo* clientInfo);
-	void	JoinRoom(int roomNumber, ClientInfo* clientInfo);
+	bool	JoinRoom(int roomNumber, ClientInfo* clientInfo);
 	void	JoinRoomUserListInfo(SOCKET& clientSock, int roomNumber);
 	int		LeaveRoom(int roomNumber, ClientInfo* clientInfo);
 

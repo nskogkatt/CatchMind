@@ -292,49 +292,79 @@ short UIManager::GetSelectedHeadCount()
 }
 
 
-void UIManager::AddUserList(int nIdentifyKey, char * szNickName, char * szLevel, char * szPosition)
+void UIManager::RefreshUserList(deque<UserInfo>& dequeUserInfo)
 {
-	auto iter = m_mapUserList.insert(std::make_pair(nIdentifyKey, nullptr));
+	UserInfo userInfo;
 
-	if (iter.second)
+	while (!dequeUserInfo.empty())
 	{
-		//중복된 키값 없이 insert 성공시
-		iter.first->second = new UserInfo;
-		iter.first->second->identifyKey = nIdentifyKey;
-		strcpy(iter.first->second->szNickName, szNickName);
-		strcpy(iter.first->second->szLevel, szLevel);
-		strcpy(iter.first->second->szPosition, szPosition);
+		userInfo = dequeUserInfo.front();
+		dequeUserInfo.pop_front();
+
+		auto iter = m_mapUserList.insert(std::make_pair(userInfo.identifyKey, nullptr));
+
+		if (iter.second)
+		{
+			//중복된 키값 없이 insert 성공시
+			iter.first->second = new UserInfo;
+			iter.first->second->identifyKey = userInfo.identifyKey;
+			strcpy(iter.first->second->szNickName, userInfo.szNickName);
+			strcpy(iter.first->second->szLevel, userInfo.szLevel);
+			strcpy(iter.first->second->szPosition, userInfo.szPosition);
+		}
+		else
+		{
+			//MessageBox(NULL, "Add User Failed..", "Caution!", MB_OK);
+		}
 	}
-	else
-	{
-		//MessageBox(NULL, "Add User Failed..", "Caution!", MB_OK);
-	}
+
+
 }
 
 void UIManager::RemoveUserList(int nIdentifyKey)
 {
+	delete m_mapUserList[nIdentifyKey];
+	m_mapUserList[nIdentifyKey] = nullptr;
 	m_mapUserList.erase(nIdentifyKey);
 }
 
-void UIManager::AddRoomList(int nRoomNumber, char * roomName, int roomSize, char * superVisorName)
+void UIManager::RefreshRoomList(deque<RoomInfo>&	dequeRoomList)
 {
-	auto iter = m_mapRoomList.insert(make_pair(nRoomNumber, nullptr));
-
-	if (iter.second)
+	RoomInfo	roomInfo;
+	
+	while (!dequeRoomList.empty())
 	{
-		UIRoomList* pRoomList = new UIRoomList;
-		pRoomList->InitRoomInfo(nRoomNumber, roomName, superVisorName, roomSize, ROOM_MAX_SIZE);
+		roomInfo = dequeRoomList.front();
+		dequeRoomList.pop_front();
 
-		iter.first->second = pRoomList;
+		auto iter = m_mapRoomList.insert(make_pair(roomInfo.roomNumber, nullptr));
+
+		if (iter.second)
+		{
+			UIRoomList* pRoomList = new UIRoomList;
+			pRoomList->InitRoomInfo(roomInfo.roomNumber, roomInfo.roomName, roomInfo.superVisorName, roomInfo.roomSize, ROOM_MAX_SIZE);
+
+			iter.first->second = pRoomList;
+		}
+		else
+		{
+			//MessageBox(NULL, "Create Room Failed..", "Caution!", MB_OK);
+		}
 	}
-	else
+}
+
+void UIManager::RemoveRoomList()
+{
+	for (auto iter = m_mapRoomList.begin(); iter != m_mapRoomList.end(); iter++)
 	{
-		//MessageBox(NULL, "Create Room Failed..", "Caution!", MB_OK);
+		
 	}
 }
 
 void UIManager::RemoveRoomList(int nRoomNumber)
 {
+	delete m_mapRoomList[nRoomNumber];
+	m_mapRoomList[nRoomNumber] = nullptr;
 	m_mapRoomList.erase(nRoomNumber);
 }
 
@@ -352,7 +382,6 @@ void UIManager::RefreshJoinRoomUserList(deque<UserInfo>& dequeUserInfo)
 		m_mapJoinRoomUserList[userInfo.joinRoomSequence]->SetPlayerInfo(userInfo);
 		// 플레이어 위치, 분배, 드로우 만들어야됨.
 	}
-
 }
 
 

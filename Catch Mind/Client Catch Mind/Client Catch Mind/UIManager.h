@@ -67,10 +67,11 @@ public:
 	short GetSelectedRoomNumber();
 	short GetSelectedHeadCount();
 
-	void AddUserList(int nIdentifyKey, char* szNickName, char* szLevel, char* szPosition);
+	void RefreshUserList(deque<UserInfo>& dequeUserInfo);
 	void RemoveUserList(int nIdentifyKey);
 	
-	void AddRoomList(int nRoomNumber, char* roomName, int roomSize, char* superVisorName);
+	void RefreshRoomList(deque<RoomInfo>&	dequeRoomList);
+	void RemoveRoomList();
 	void RemoveRoomList(int nRoomNumber);
 
 	void RefreshJoinRoomUserList(deque<UserInfo>& dequeUserInfo);

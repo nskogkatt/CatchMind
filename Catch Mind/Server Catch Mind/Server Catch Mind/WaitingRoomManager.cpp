@@ -26,10 +26,16 @@ void WaitingRoomManager::CreateRoom(char* roomName, SOCKET & clientSock, ClientI
 	m_iRoomIndex++;
 }
 
-void WaitingRoomManager::JoinRoom(int roomNumber, ClientInfo * clientInfo)
+bool WaitingRoomManager::JoinRoom(int roomNumber, ClientInfo * clientInfo)
 {
+	auto iter = m_mapRoom.find(roomNumber);
+	if (iter == m_mapRoom.end())
+		return false;
+
 	m_mapRoom[roomNumber]->AddUser(clientInfo);
 	printf("[방참여] 방번호: %d, 참여자: %s, 총인원: %d / 8\n", roomNumber, clientInfo->m_szName,m_mapRoom[roomNumber]->GetRoomHeadCount());
+
+	return true;
 }
 
 void WaitingRoomManager::JoinRoomUserListInfo(SOCKET& clientSock, int roomNumber)
@@ -59,9 +65,15 @@ void WaitingRoomManager::SendRoomListToClient(SOCKET clientSock)
 {
 	PACKET_ROOM_LIST packet;
 
-	for (auto iter = m_mapRoom.begin(); iter != m_mapRoom.end(); iter++)
+	for (auto iter = m_mapRoom.begin(); iter != m_mapRoom.end();)
 	{
 		packet = iter->second->GetRoomInfo();
+
+		if (++iter != m_mapRoom.end())
+			packet.bIsEnd = false;
+		else
+			packet.bIsEnd = true;
+
 		send(clientSock, (const char*)&packet, sizeof(PACKET_ROOM_LIST), 0);
 	}
 }

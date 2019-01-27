@@ -32,11 +32,16 @@ private:
 	int							m_recvBytes;
 
 	deque<UserInfo>				m_dequeJoinRoomUserInfo;
+	deque<UserInfo>				m_dequeUIUserList;
+	deque<RoomInfo>				m_dequeUIRoomList;
 
 	// 오류 출력 함수
 	void err_quit(char* msg);
 	void err_display(char* msg);
 	void SetUserInfo(UserInfo& userInfoSrc, UserInfo& userInfoDst);
+	void SetRoomInfo(RoomInfo& roomInfoSrc, RoomInfo& roomInfoDst);
+
+	void RequestRefreshRoomListToServer();
 
 public:
 	static TCPManager* GetInstance()

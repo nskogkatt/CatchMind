@@ -59,9 +59,8 @@ public:
 	void InputMouseLButtonDown(POINT& ptMouse);
 	void JoinWaittingRoom();				// 대기실 - 로비로 들어가기
 	void JoinGameRoom();					// 대기실 -> 게임방 들어가기
+	void FeedBackJoinRoom(bool bIsSucces);	// 방 접속 성공 여부
 	void ExecuteCreateRoom();				// 방생성 만들기 버튼 실행
-	void AddUserList(int nIdentifyKey, char* szName, char* szLevel, char* szPosition);
-	void RemoveUserList(int nIdentifyKey);
 
 	void SetPlayerCharacter(UI_TYPE eType, char* szName);
 	void SetPlayerInfo(char* szNickName, char* szLevel, char* szPosition);
